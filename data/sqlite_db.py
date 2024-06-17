@@ -15,7 +15,7 @@ class NarouDB:
         self.cursor.execute(f"SELECT ncode FROM {self.TABLE_NOVELS_META_RAW} LIMIT {lim} OFFSET {offset}")
         return map(lambda x: x[0], self.cursor.fetchall())
     
-    def get_novel_title(self, ncode):
+    def get_novel_name(self, ncode):
         ncode=ncode.upper()
         self.cursor.execute(f"SELECT title FROM {self.TABLE_NOVELS_META_RAW} WHERE ncode=?", (ncode,))
         return self.cursor.fetchone()[0]
