@@ -76,13 +76,13 @@ class NcodeReviewsSpider(scrapy.Spider):
         for raw in raws:
             title=raw.css('h2::text').get()
             user =raw.css('.review_user').xpath('div/a/text()').get()
-            date =raw.css('.review_user_date::text').get().replace("年 ", "-").replace("月 ", "-").replace("日 ", " ").replace("時 ", ":").replace("分", "")
+            date =raw.css('.review_user_date::text').get().replace("年 ", "-").replace("月 ", "-").replace("日 ", " ").replace("時 ", ":").replace("分", "").replace("\n", "").replace("[", "").replace("]", "")
             body =''.join(raw.css('.review_main::text').getall())
             out.append({'title':title, 'user':user, 'date':date, 'body':body})
 
         filename = os.path.join(self.dirname, f'{self.counter}.json')
         with open(filename, 'w', encoding="utf-8") as f:
-            f.write(json.dumps(out))
+            json.dump(out, f, ensure_ascii=False, indent=4)
         self.counter += 1
         
         next_page = response.xpath('//a[@title="次のページ"]/@href').get()
@@ -101,7 +101,7 @@ class NcodeReviewsSpider(scrapy.Spider):
         cls.output_dir = output_dir
         cls.dirname=os.path.join(output_dir, ncode)
         cls.custom_settings = {
-            'DOWNLOAD_DELAY': 1,
+            'DOWNLOAD_DELAY': 2,
             'CONCURRENT_REQUESTS': 4,
         }
 
